@@ -8,6 +8,7 @@ import {
   type FormEvent,
 } from "react";
 import JSZip from "jszip";
+import Script from "next/script";
 
 type WizardStep = {
   id: number;
@@ -54,14 +55,30 @@ type AdSlotConfig = {
   label: string;
   size: string;
   placement: "banner" | "inline";
+  slotId: string;
 };
 
 const STORAGE_KEY = "hoijof.appbuilder.state.v1";
 
 const ADS_ENABLED = true;
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "";
+const ADSENSE_SLOT_BANNER = process.env.NEXT_PUBLIC_ADSENSE_SLOT_BANNER ?? "";
+const ADSENSE_SLOT_INLINE = process.env.NEXT_PUBLIC_ADSENSE_SLOT_INLINE ?? "";
 const AD_SLOTS: AdSlotConfig[] = [
-  { id: "banner", label: "Sponsored", size: "728x90", placement: "banner" },
-  { id: "inline", label: "Sponsored", size: "160x600", placement: "inline" },
+  {
+    id: "banner",
+    label: "Sponsored",
+    size: "728x90",
+    placement: "banner",
+    slotId: ADSENSE_SLOT_BANNER,
+  },
+  {
+    id: "inline",
+    label: "Sponsored",
+    size: "160x600",
+    placement: "inline",
+    slotId: ADSENSE_SLOT_INLINE,
+  },
 ];
 
 const STEPS: WizardStep[] = [
@@ -180,26 +197,72 @@ export const parseState = (raw: string | null) => {
   }
 };
 
-const AdSlot = ({ slot }: { slot: AdSlotConfig }) => (
-  <div
-    data-testid={`ad-slot-${slot.id}`}
-    data-ad-slot={slot.id}
-    data-ad-placement={slot.placement}
-    aria-label="Advertisement"
-    className={`w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-5 text-center text-slate-400 ${
-      slot.placement === "inline"
-        ? "min-h-[600px] h-[calc(100vh-8rem)] flex flex-col justify-center"
-        : ""
-    }`}
-  >
-    <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-      {slot.label}
+const parseAdSize = (size: string) => {
+  const [width, height] = size.split("x").map((value) => Number(value));
+  return {
+    width: Number.isFinite(width) ? width : 0,
+    height: Number.isFinite(height) ? height : 0,
+  };
+};
+
+const AdSlot = ({ slot }: { slot: AdSlotConfig }) => {
+  const { width, height } = parseAdSize(slot.size);
+  const isConfigured =
+    ADS_ENABLED && ADSENSE_CLIENT.trim() !== "" && slot.slotId.trim() !== "";
+
+  useEffect(() => {
+    if (!isConfigured) return;
+    if (typeof window === "undefined") return;
+    try {
+      const adsbygoogle = (window as Window & { adsbygoogle?: unknown[] })
+        .adsbygoogle;
+      if (Array.isArray(adsbygoogle)) {
+        adsbygoogle.push({});
+      } else {
+        (window as Window & { adsbygoogle?: unknown[] }).adsbygoogle = [{}];
+      }
+    } catch (error) {
+      console.error("Adsbygoogle init failed", error);
+    }
+  }, [isConfigured, slot.id]);
+
+  return (
+    <div
+      data-testid={`ad-slot-${slot.id}`}
+      data-ad-slot={slot.id}
+      data-ad-placement={slot.placement}
+      aria-label="Advertisement"
+      className={`w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-5 text-center ${
+        slot.placement === "inline"
+          ? "min-h-[600px] h-[calc(100vh-8rem)] flex flex-col justify-center"
+          : ""
+      }`}
+    >
+      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        {slot.label}
+      </div>
+      <div className="mt-2 flex justify-center">
+        {isConfigured ? (
+          <ins
+            className="adsbygoogle"
+            style={{
+              display: "inline-block",
+              width: width ? `${width}px` : undefined,
+              height: height ? `${height}px` : undefined,
+            }}
+            data-ad-client={ADSENSE_CLIENT}
+            data-ad-slot={slot.slotId}
+            data-full-width-responsive="false"
+          />
+        ) : (
+          <span className="text-sm text-slate-400">
+            Ad slot {slot.id} ({slot.size})
+          </span>
+        )}
+      </div>
     </div>
-    <div className="mt-2 text-sm">
-      Ad Slot {slot.id} ({slot.size})
-    </div>
-  </div>
-);
+  );
+};
 
 export default function Home() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -232,6 +295,7 @@ export default function Home() {
   >({});
   const dragItemId = useRef<string | null>(null);
   const [isZipping, setIsZipping] = useState(false);
+  const adSenseEnabled = ADS_ENABLED && ADSENSE_CLIENT.trim() !== "";
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -671,6 +735,13 @@ ${
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-24">
+      {adSenseEnabled && (
+        <Script
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
+      )}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
