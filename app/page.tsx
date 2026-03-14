@@ -702,6 +702,17 @@ ${
     try {
       const zip = new JSZip();
       zip.file("PRD.md", generatePRD());
+      try {
+        const response = await fetch("/hoijof-process.md");
+        if (response.ok) {
+          const framework = await response.text();
+          if (framework.trim()) {
+            zip.file("hoijof-process.md", framework);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load hoijof-process.md", error);
+      }
 
       dynamicPhases.forEach((phase) => {
         if (phase === "Backlog") return;
@@ -759,8 +770,8 @@ ${
       </header>
 
       <main className="max-w-7xl mx-auto px-6 mt-8">
-        <div className="flex items-start gap-6">
-          <div className="flex-1 min-w-0">
+        <div className="flex items-start xl:items-stretch gap-6 xl:min-h-[calc(100vh-8rem)]">
+          <div className="flex-1 min-w-0 flex flex-col xl:min-h-[calc(100vh-6rem)]">
             {ADS_ENABLED && (
               <div className="mb-6">
                 <AdSlot slot={AD_SLOTS[0]} />
@@ -810,7 +821,7 @@ ${
           })}
         </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-10 min-h-[550px]">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-10 min-h-[550px] flex flex-col flex-1">
           {aiError && (
             <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 flex items-center justify-between gap-4">
               <span>{aiError}</span>
@@ -960,7 +971,15 @@ ${
                         className="block text-sm font-semibold text-slate-700 mb-2"
                         htmlFor="gemini-api-key"
                       >
-                        Gemini API Key
+                        <span>Gemini API Key</span>
+                        <a
+                          href="https://aistudio.google.com/app/apikey"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="ml-2 text-xs font-semibold text-indigo-600 hover:text-indigo-500"
+                        >
+                          Get a key
+                        </a>
                       </label>
                       <input
                         id="gemini-api-key"
@@ -1456,7 +1475,7 @@ ${
           )}
             </div>
 
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex items-center justify-between mt-6 pb-6">
           <button
             type="button"
             onClick={goBack}
