@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hoijof Process Creator
 
-## Getting Started
+Hoijof Process Creator (Hoijof Builder) is a client-only web app that guides developers through a progressive disclosure wizard to turn raw ideas into structured, AI-ready Hoijof documentation.
 
-First, run the development server:
+## Current Status (as of 2026-03-14)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- MVP is complete: Steps 1-5, feature backlog, Kanban phasing, and export flow.
+- Phase 2 is implemented: Gemini-powered "Magic Buttons", LocalStorage persistence, and ad placements.
+- Phase 3 is TBD.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Highlights
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 5-step wizard with consolidated state and navigation.
+- Feature backlog with P1/P2/P3 priorities and phase assignment.
+- Drag-and-drop Kanban phasing with dynamic phases and collapsible columns.
+- Markdown PRD + phase roadmap generation with JSZip download.
+- Gemini API integration for pitch, stack, feature, and triage assistance.
+- LocalStorage persistence with a reset option.
+- Banner and right-rail ad slots (config-driven).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+- Next.js 16, React 19, TailwindCSS 4
+- JSZip (client-side)
+- Jest + React Testing Library
 
-To learn more about Next.js, take a look at the following resources:
+## Quick Start
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. `npm install`
+2. `npm run dev`
+3. Open `http://localhost:3000`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tests
 
-## Deploy on Vercel
+- `npm test`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Gemini Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Gemini requires a Google AI Studio API key. The key is entered in the UI and used only in the client. It is not persisted in LocalStorage.
+
+## Docs and Plans
+
+- `hoijof-process.md`
+- `plans/MVP/mvp-final-status.md`
+- `plans/Phase2/phase2-roadmap.md`
+- `plans/Phase3/phase3-roadmap.md`
+
+## Repo Structure
+
+- `app/` - Next.js app and wizard UI.
+- `public/` - Branding assets (logo, favicon).
+- `__tests__/` - Jest/RTL test suite.
+
