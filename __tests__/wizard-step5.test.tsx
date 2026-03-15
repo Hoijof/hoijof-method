@@ -9,6 +9,7 @@ jest.mock("jszip", () => {
   }));
 });
 
+import JSZip from "jszip";
 import Home from "../app/page";
 
 describe("Step 5 PRD generator", () => {
@@ -50,6 +51,14 @@ describe("Step 5 phase roadmap generator", () => {
 });
 
 describe("Step 5 zip export", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Avoid noisy console errors from missing fetch during ZIP generation.
+    (globalThis as unknown as { fetch: jest.Mock }).fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: false, text: jest.fn().mockResolvedValue("") });
+  });
+
   it("disables export button while zipping", async () => {
     const user = userEvent.setup();
     render(<Home />);
@@ -62,5 +71,35 @@ describe("Step 5 zip export", () => {
     });
     await user.click(exportButton);
     await waitFor(() => expect(exportButton).toBeDisabled());
+  });
+
+  it("adds hoijof-process.md to the zip", async () => {
+    (globalThis as unknown as { fetch: jest.Mock }).fetch = jest
+      .fn()
+      .mockResolvedValue({
+        ok: true,
+        text: jest.fn().mockResolvedValue("# The Hoijof Process\n"),
+      });
+
+    const user = userEvent.setup();
+    render(<Home />);
+    await user.click(screen.getByRole("button", { name: /Next Step/i }));
+    await user.click(screen.getByRole("button", { name: /Next Step/i }));
+    await user.click(screen.getByRole("button", { name: /Next Step/i }));
+    await user.click(screen.getByRole("button", { name: /Next Step/i }));
+
+    await user.click(
+      screen.getByRole("button", { name: /Download All as ZIP/i })
+    );
+
+    const JSZipMock = JSZip as unknown as jest.Mock;
+    const zip = JSZipMock.mock.results[0]?.value as { file: jest.Mock };
+
+    await waitFor(() =>
+      expect(zip.file).toHaveBeenCalledWith(
+        "hoijof-process.md",
+        expect.stringContaining("The Hoijof Process")
+      )
+    );
   });
 });

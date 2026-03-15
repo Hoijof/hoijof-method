@@ -45,9 +45,14 @@ Gemini requires a Google AI Studio API key. The key is entered in the UI and use
 - `plans/Phase2/phase2-roadmap.md`
 - `plans/Phase3/phase3-roadmap.md`
 
+## Hoijof Process Tooling
+
+- `npm run hoijof:sync` keeps `public/hoijof-process.md` in sync with the canonical `hoijof-process.md` (also runs automatically on `npm run dev` and `npm run build`).
+- `npm run hoijof:new-phase -- Phase4` scaffolds a new phase roadmap + final status doc from templates.
+- `npm run hoijof:new-milestone -- Phase3 p3-m1-something` scaffolds a milestone design doc + implementation plan and injects a milestone entry into the phase roadmap.
+
 ## Repo Structure
 
 - `app/` - Next.js app and wizard UI.
 - `public/` - Branding assets (logo, favicon).
 - `__tests__/` - Jest/RTL test suite.
-

@@ -1,5 +1,7 @@
 # The Hoijof Process
 
+_Last updated: 2026-03-14_
+
 The "Hoijof Process" is a structured, documentation-first, and AI-friendly software development methodology designed to successfully deliver complex projects systematically with high test coverage and transparent decision-making. It is tailored to handle large context applications and maximize the efficiency of AI coding assistants.
 
 ---
@@ -24,6 +26,37 @@ Please ask me any questions you may get along the way.
 
 ---
 
+## Process Gates (Required)
+
+These gates are the definition of "allowed to proceed" for Hoijof work. If a gate is not met, the work is considered **blocked**.
+
+- **Gate A (Roadmap Focus):** The current task exists in the active Phase Roadmap and is explicitly the focus (one "current" milestone at a time).
+- **Gate B (Design Approved):** A Design Doc exists for the milestone and includes `Status: APPROVED`.
+- **Gate C (TDD Task Structure):** Implementation plan tasks are written as a strict loop:
+  - Write the failing test (commit or checkpoint).
+  - Implement the minimal code to pass.
+  - Run tests and verify pass.
+  - Mark the task checkbox complete.
+- **Gate D (Milestone Done):** A milestone is only "Done" when:
+  - `npm test` is green.
+  - `npm run build` is green.
+  - UI is visually sanity-checked (when applicable).
+  - Roadmap Memory Log is updated with a dated entry.
+
+## Status Vocabulary (Standard)
+
+To keep docs and automation consistent, use only these values:
+
+- **Phase/Milestone Status:** `NOT STARTED` | `IN PROGRESS` | `BLOCKED` | `DONE`
+- **Design Doc Status:** `DRAFT` | `IN REVIEW` | `APPROVED` | `SUPERSEDED`
+
+## Required Doc Front Matter
+
+Every roadmap and milestone doc should include:
+
+- `_Last updated: YYYY-MM-DD_` near the top.
+- A `Status:` line using the standardized vocabulary above.
+
 ## Folder Structure Overview
 
 ```text
@@ -33,7 +66,7 @@ Please ask me any questions you may get along the way.
   /Phase2/
     phase2-roadmap.md                      # Master roadmap
     phase2-final-status.md                 # Final status doc
-    p2-authentication.md                   # Implementation plan
+    p2-*.md                                # Implementation plans
     ...
   /Phase3/
     phase3-roadmap.md
@@ -84,9 +117,10 @@ Once designed and approved, an Execution/Implementation Plan is created (e.g., `
 A task or milestone is only considered "Done" when:
 
 1. Tests are written and passing locally.
-2. The UI is visually verified (if applicable).
-3. An atomic commit is made describing the change.
-4. The task is marked complete `[x]` in BOTH the Implementation Plan AND the Phase Roadmap.
+2. Production build succeeds locally (`npm run build`).
+3. The UI is visually verified (if applicable).
+4. An atomic commit is made describing the change.
+5. The task is marked complete `[x]` in BOTH the Implementation Plan AND the Phase Roadmap.
 
 ## 4. Phase Close-Out
 

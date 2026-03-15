@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/sync-hoijof-process.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/sync-hoijof-process.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "jest"
+    "test": "jest",
+    "hoijof:sync": "node scripts/sync-hoijof-process.mjs",
+    "hoijof:new-phase": "node scripts/hoijof-scaffold.mjs new-phase",
+    "hoijof:new-milestone": "node scripts/hoijof-scaffold.mjs new-milestone"
   },
   "dependencies": {
     "jszip": "^3.10.1",
