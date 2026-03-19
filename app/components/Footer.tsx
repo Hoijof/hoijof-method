@@ -16,6 +16,9 @@ export default function Footer() {
             <span className="font-bold text-slate-900">
               Hoijof <span className="font-light text-indigo-600">Builder</span>
             </span>
+            <span className="text-xs text-slate-400 ml-2">
+              © {year} Hoijof Builder. All rights reserved.
+            </span>
           </div>
           
           <nav className="flex flex-wrap items-center justify-center gap-6">
@@ -44,10 +47,6 @@ export default function Footer() {
               hoijof@gmail.com
             </a>
           </div>
-        </div>
-        
-        <div className="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
-          © {year} Hoijof Builder. All rights reserved.
         </div>
       </div>
     </footer>
