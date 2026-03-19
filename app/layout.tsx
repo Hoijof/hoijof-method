@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import Footer from "./components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -31,8 +32,11 @@ export default function RootLayout({
       <head>
         <meta name="google-adsense-account" content="ca-pub-2816896179554108" />
       </head>
-      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
-        {children}
+      <body className={`${inter.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+        <div className="flex-1">
+          {children}
+        </div>
+        <Footer />
       </body>
     </html>
   );
